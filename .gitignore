@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+
+# 环境变量与密钥（绝对不要提交）
+.env
+.env.*
+*.key
+*.pem
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
