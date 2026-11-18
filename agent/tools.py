@@ -1,5 +1,4 @@
 import requests
-import json
 import os
 from tavily import TavilyClient
 
@@ -72,3 +71,13 @@ def get_attraction(city: str, weather: str) -> str:
 
     except Exception as e:
         return f"错误:执行Tavily搜索时出现问题 - {e}"
+
+available_tools = {
+    "get_weather": get_weather,
+    "get_attraction": get_attraction,
+}
+
+
+
+
+

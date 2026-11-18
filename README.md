@@ -59,6 +59,7 @@ pip install requests python-dotenv tavily-python openai
 ```bash
 DEEPSEEK_API_KEY=你的key
 DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-flash
 TAVILY_API_KEY=你的key
 ```
 
@@ -72,11 +73,11 @@ python main.py
 
 ## 开发进度
 
-- [x] 工具层：天气查询、景点推荐（含异常兜底）
-- [ ] 模型客户端：DeepSeek 接入 + `.env` 加载
-- [ ] ReAct 提示词模板：约定 Thought / Action / Observation 的输出格式
-- [ ] 主循环：解析模型输出、调度工具、拼接观察结果
-- [ ] 终止条件：识别 `Finish` 并提取最终答案
+- [x] 工具层：天气查询（wttr.in）、景点推荐（Tavily，含异常兜底）
+- [x] 模型客户端：DeepSeek 接入 + `.env` 加载（`agent/llm.py`，`agent/__init__.py` 里 `load_dotenv()`）
+- [x] ReAct 提示词模板：约定 Thought / Action / Observation 的输出格式（`agent/prompt.py`）
+- [x] 主循环：解析模型输出、调度工具、拼接观察结果（`main.py`）
+- [x] 终止条件：识别 `Finish` 并提取最终答案
 - [ ] 多轮记忆与工具调用日志
 
 ## 参考
