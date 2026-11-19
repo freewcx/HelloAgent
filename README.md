@@ -1,77 +1,73 @@
 # HelloAgent
 
-从零手写一个 **ReAct Agent**，不依赖 LangChain 的 `create_agent`，把「思考 → 行动 → 观察 → 再思考」这个循环掰开揉碎实现一遍。
+从零手写 Agent，不依赖 LangChain 的 `create_agent`，把「思考 → 行动 → 观察 → 再思考」这个循环掰开揉碎实现一遍。
 
-## 为什么做这个
-
-框架里一行 `create_agent()` 就能跑起来，但中间发生了什么全是黑盒：模型怎么决定调哪个工具？工具返回的结果怎么塞回上下文？循环什么时候该停？
-
-这个项目把每一层都手写一遍，用最少的抽象看清 Agent 的最小内核。
-
-## 核心思路
-
-ReAct = **Rea**soning + **Act**ing。每一轮迭代做三件事：
-
-```
-用户提问
-   ↓
-LLM 输出 Thought（我要做什么）+ Action（调哪个工具、传什么参数）
-   ↓
-执行工具 → 得到 Observation（工具返回的原始结果）
-   ↓
-把 Observation 追加回对话历史 → 再次请求 LLM
-   ↓
-LLM 说 Finish → 输出 Final Answer，循环结束
-```
-
-关键点在于**状态就是一段不断变长的消息历史**，没有别的魔法。
+跟随 Datawhale [Hello-Agents](https://github.com/datawhalechina/hello-agents) 教程推进，代码按章节组织在 `code/` 下，每章自包含、可直接运行。
 
 ## 目录结构
 
 ```
 HelloAgent/
-├── main.py              # 入口：驱动 ReAct 循环
-├── agent/
-│   ├── llm.py           # 模型客户端（DeepSeek，走 OpenAI 兼容协议）
-│   ├── prompt.py        # ReAct 提示词模板
-│   └── tools.py         # 工具集
-├── .env                 # API 密钥（已 gitignore，不提交）
+├── code/
+│   ├── chapter01_travel_assistant/     # 教程第一章案例：智能旅行助手（ReAct 最小实现）
+│   │   ├── main.py                     # 入口：驱动 ReAct 循环
+│   │   └── agent/
+│   │       ├── __init__.py             # load_dotenv()，import 时加载 .env
+│   │       ├── llm.py                  # 模型客户端（DeepSeek，走 OpenAI 兼容协议）
+│   │       ├── prompt.py               # ReAct 提示词模板
+│   │       └── tools.py                # 工具集（wttr.in 天气 + Tavily 景点搜索）
+│   └── chapter04_classic_paradigms/    # 教程第四章：智能体经典范式（进行中）
+│       ├── llm_client.py               # 4.1.3 HelloAgentsLLM 统一客户端封装
+│       ├── demo_llm.py                 # 4.1.3 冒烟测试
+│       └── (ReAct.py / Plan_and_solve.py / Reflection.py)   # 4.2~4.4 待添加
+├── docs/notes/                         # 学习笔记（按章节）
+├── .env.example                        # 环境变量模板（复制为 .env 后填真实密钥）
 └── requirements.txt
 ```
 
-
 ## 快速开始
 
-**1. 环境**
-
-Python 3.13（conda 环境 `langchain1.2`）
+**1. 环境**：Python 3.13（conda 环境 `langchain1.2`）
 
 **2. 安装依赖**
 
 ```bash
-pip install requests python-dotenv tavily-python openai
+pip install -r requirements.txt
 ```
 
 **3. 配置密钥**
 
-在项目根目录建 `.env`：
-
 ```bash
-DEEPSEEK_API_KEY=你的key
-DEEPSEEK_BASE_URL=https://api.deepseek.com
-DEEPSEEK_MODEL=deepseek-flash
-TAVILY_API_KEY=你的key
+cp .env.example .env    # 然后填入真实 key
 ```
+
+| 变量 | 用途 |
+|---|---|
+| `LLM_API_KEY` / `LLM_MODEL_ID` / `LLM_BASE_URL` | LLM 客户端（第四章起统一用这组） |
+| `DEEPSEEK_API_KEY` / `DEEPSEEK_BASE_URL` / `DEEPSEEK_MODEL` | 第一章案例的模型客户端 |
+| `TAVILY_API_KEY` / `SERPAPI_API_KEY` | 搜索工具（二选一） |
 
 > `.env` 已在 `.gitignore` 里，不会被提交。
 
-**4. 运行**
+**4. 运行各章节案例**
 
 ```bash
-python main.py
+# 第一章：智能旅行助手
+python code/chapter01_travel_assistant/main.py
+
+# 第四章 4.1.3：HelloAgentsLLM 封装冒烟测试
+python code/chapter04_classic_paradigms/demo_llm.py
 ```
 
-## 开发进度
+## 学习进度
+
+| 教程章节 | 目录 | 内容 | 状态 |
+|---|---|---|---|
+| 第一章 初识智能体 | `code/chapter01_travel_assistant/` | 智能旅行助手：ReAct 循环手写实现 | ✅ 完成 |
+| 第四章 经典范式构建 | `code/chapter04_classic_paradigms/` | 4.1.3 HelloAgentsLLM 客户端封装 | 🚧 进行中 |
+| 第四章 经典范式构建 | 同上 | 4.2~4.4 ReAct / Plan-and-Solve / Reflection | ⬜ 待开始 |
+
+## 第一章实现清单
 
 - [x] 工具层：天气查询（wttr.in）、景点推荐（Tavily，含异常兜底）
 - [x] 模型客户端：DeepSeek 接入 + `.env` 加载（`agent/llm.py`，`agent/__init__.py` 里 `load_dotenv()`）
@@ -80,7 +76,8 @@ python main.py
 - [x] 终止条件：识别 `Finish` 并提取最终答案
 - [ ] 多轮记忆与工具调用日志
 
+学习笔记见 [docs/notes/chapter01.md](docs/notes/chapter01.md)。
+
 ## 参考
 
 - [Hello-Agents](https://github.com/datawhalechina/hello-agents) — Datawhale 的 Agent 教程，本项目跟随其思路手写实现
-

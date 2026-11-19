@@ -10,8 +10,13 @@ env/
 # 环境变量与密钥（绝对不要提交）
 .env
 .env.*
+!.env.example
 *.key
 *.pem
+
+# WorkBuddy 工具数据（本地保留，不提交）
+.workbuddy/
+.WorkBuddy/
 
 # PyCharm
 .idea/
