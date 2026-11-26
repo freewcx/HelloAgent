@@ -4,7 +4,7 @@
 
 | 文件 | 对应小节 | 说明 |
 |---|---|---|
-| `llm_client.py` | 4.1.3 | `HelloAgentsLLM`：统一 LLM 客户端封装，读取 `.env` 的 `LLM_*` 变量，`think()` 流式调用 |
+| `agent/llm_client.py` | 4.1.3 | `HelloAgentsLLM`：统一 LLM 客户端封装，读取 `.env` 的 `LLM_*` 变量，`think()` 流式调用 |
 | `demo_llm.py` | 4.1.3 | 冒烟测试：验证封装能正常调用 |
 | `tools.py` | 4.2 | 工具定义（SerpApi 搜索 / ToolExecutor），待添加 |
 | `ReAct.py` | 4.3 | ReAct 范式，待添加 |
