@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Callable
 from serpapi import SerpApiClient
 
 from agent.search import search
@@ -11,7 +11,7 @@ class ToolExecutor:
     def __init__(self):
         self.tools: Dict[str, Dict[str, Any]] = {}
 
-    def registerTool(self, name: str, description: str, func: callable):
+    def registerTool(self, name: str, description: str, func: Callable):
         """
         向工具箱中注册一个新工具。
         """
@@ -20,7 +20,7 @@ class ToolExecutor:
         self.tools[name] = {"description": description, "func": func}
         print(f"工具 '{name}' 已注册。")
 
-    def getTool(self, name: str) -> callable:
+    def getTool(self, name: str) -> Callable:
         """
         根据名称获取一个工具的执行函数。
         """
